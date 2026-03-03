@@ -124,3 +124,7 @@ Dashboard: `http://localhost:8050`
 - Do **not** log or commit private keys / API credentials.
 - Keep `.env` in `.gitignore`.
 - Consider running LIVE with a dedicated wallet and strict limits.
+
+## Tests
+
+You can track on https://erna.codes
