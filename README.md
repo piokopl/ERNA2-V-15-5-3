@@ -1,4 +1,4 @@
-# ERNA2-V-15-5-3 (Martingale 2.0)
+# ERNA2-V-15-5-3 Polymarket crypto trading bot
 
 A bot for trading Polymarket 15-minute markets using an **in-window** strategy with a **Martingale 2.0** sizing system.
 
