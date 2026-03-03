@@ -124,12 +124,12 @@ keltner:
 # ------------------------------------------------------------------------------
 adx:
   primary:
-    api_url: "https://mimir.erna.codes/bot_adx"
+    api_url: ""
     timeout: 10
     retries: 3
     retry_sleep_s: 1.0
   secondary:
-    api_url: "https://adx.erna.codes/bot_adx"
+    api_url: ""
     timeout: 10
     retries: 3
     retry_sleep_s: 1.0
