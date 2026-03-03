@@ -114,7 +114,7 @@ python runner.py --no-dashboard
 python runner.py --dashboard-port 8080
 ```
 
-Dashboard: `http://localhost:8050`
+Dashboard: `http://localhost:8080`
 
 ## Notes on safety and secrets
 
