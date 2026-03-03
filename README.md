@@ -1,6 +1,6 @@
-# ERNA2-V-15-5-3 Polymarket crypto trading bot
+# ERNA2-V-15-5-3 Polymarket M15 crypto trading bot
 
-A bot for trading Polymarket 15-minute markets using an **in-window** strategy with a **Martingale 2.0** sizing system.
+A bot for trading Polymarket 15-minute markets using an VKI strategy with a Martingale 2.0 sizing system.
 
 > ⚠️ Disclaimer: This repository is for educational/research purposes. LIVE trading involves real money and risk.
 
@@ -85,7 +85,7 @@ Edit `config.yaml`:
 - `mode.demo`: `true` for simulation, `false` for LIVE trading
 - `strategy.buy_price`, `strategy.sell_target`, `strategy.order_size`
 - `decision_trend`: which indicator drives the buy decision (`V`, `M`, `L`, `A`, `VOTE`, etc.)
-- indicator sections: `adx`, `macd`, `vki`, `multi`, `lorentzian`, `keltner`, `ai`
+- indicator sections: vki
 
 ## Environment variables
 
@@ -97,9 +97,6 @@ Required for LIVE trading:
 - `POLYMARKET_API_KEY`
 - `POLYMARKET_API_SECRET`
 - `POLYMARKET_API_PASSPHRASE`
-
-Optional:
-- `ANTHROPIC_API_KEY` (only if `ai.enabled: true`)
 
 ## Running
 
@@ -124,6 +121,16 @@ Dashboard: `http://localhost:8050`
 - Do **not** log or commit private keys / API credentials.
 - Keep `.env` in `.gitignore`.
 - Consider running LIVE with a dedicated wallet and strict limits.
+
+## Attention
+
+This version of the bot is configured as ERNA2-V-15-5-3. You can 
+track the bot's results on the website. Any configuration changes 
+may affect the results. Note: The bot uses martingale, so if you're 
+unwise enough to run it in production mode, remember that a single 
+traded symbol (e.g., BTC), assuming the purchase of the smallest 
+amount of 5.5 shares, i.e., approximately $2.50, requires a minimum 
+safe capital of $200, and $400 per symbol is highly recommended.
 
 ## Tests
 
