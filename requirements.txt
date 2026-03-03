@@ -1,0 +1,23 @@
+# PolySniper Bot - Requirements
+# Python 3.10+
+
+# HTTP clients
+httpx>=0.25.0
+requests>=2.31.0
+
+# WebSocket
+websocket-client>=1.6.0
+
+# Config & Environment
+PyYAML>=6.0
+python-dotenv>=1.0.0
+
+# Web Dashboard
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# Polymarket CLOB API Client
+py-clob-client>=0.6.0
+
+# Optional: for better async performance
+# anyio>=4.0.0

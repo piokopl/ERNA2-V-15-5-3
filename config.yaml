@@ -1,0 +1,175 @@
+# ==============================================================================
+# ERNA2-V-15-5-3 — Configuration
+# ==============================================================================
+# In-Window strategy with Martingale 2.0:
+#   - Place a BUY right AFTER the window starts
+#   - Monitor best bid and SELL once it reaches the target
+#   - Martingale increases stake after a LOSS (configured multipliers)
+#
+# Flow:
+#   1) Wait for the next 15-minute window
+#   2) At window start: fetch trend, BUY YES or NO
+#   3) Monitor price:
+#        - bid >= sell_target   -> SELL -> WIN  -> reset martingale
+#        - window ends w/o sell -> LOSS -> advance martingale step
+#   4) Repeat
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# MODE
+# ------------------------------------------------------------------------------
+mode:
+  demo: true  # true = simulation (no real orders), false = LIVE TRADING (real funds!)
+
+# ------------------------------------------------------------------------------
+# DASHBOARD
+# ------------------------------------------------------------------------------
+dashboard:
+  title: "Test ERNA1-V-15-5-3"  # Display name in the dashboard
+
+# ------------------------------------------------------------------------------
+# STRATEGY
+# ------------------------------------------------------------------------------
+strategy:
+  buy_price: 0.58     # Maximum buy price (limit BUY)
+  sell_target: 0.99 # Take-profit target (SELL when best bid >= target)
+  order_size: 5.5   # Base order size (before martingale)
+
+# ------------------------------------------------------------------------------
+# BLACKLIST HOURS (UTC)
+# ------------------------------------------------------------------------------
+# Hours (UTC) during which the bot will NOT trade.
+# Format: list of hours (0-23). Windows starting in these hours will be skipped.
+blacklist_hours: [12,13,15]  # UTC hours to block (0-23)
+
+# ------------------------------------------------------------------------------
+# MARTINGALE 2.0
+# ------------------------------------------------------------------------------
+# Multipliers per martingale step.
+# After a LOSS at the last level -> reset back to step 0.
+#
+# target_reduction reduces sell_target on higher steps:
+#   - second_last: subtract this from sell_target on the second-to-last step
+#   - last:        subtract this from sell_target on the last step
+#
+# LOSS = the window ended without selling (price never reached the target)
+# WIN  = we sold before the window ended (bid >= target)
+martingale:
+  multipliers: [1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+  target_reduction:
+    second_last: 0.0
+    last: 0.0
+
+# ------------------------------------------------------------------------------
+# DECISION TREND — WHICH TREND DRIVES THE BUY DECISION
+# ------------------------------------------------------------------------------
+# Single trend:
+#   P    - Primary ADX
+#   S    - Secondary ADX
+#   D    - MACD
+#   V    - VKI (RSI Kernel Optimized)
+#   K    - Keltner Channels (price < lower band = UP oversold)
+#   M    - Multi-indicator (requires 3+ internal indicators aligned)
+#   L    - Lorentzian composite (LC + SuperTrend + EMA200 + VP + SMC)
+#   A    - AI prediction (LLM with web_search)
+#
+# Combinations (ALL must agree):
+#   P+V, P+V+K, L+M, D+V+K, P+S+D+V+K
+#
+# Voting:
+#   VOTE - majority vote across (P, S, D, V, M, L, A); requires 4/7
+#          K is excluded (too infrequent)
+#
+# UP   -> BUY YES
+# DOWN -> BUY NO
+# disagreement / None -> skip window
+decision_trend: "V"
+
+# ------------------------------------------------------------------------------
+# AI (A) — LLM-BASED SHORT-TERM PREDICTION
+# ------------------------------------------------------------------------------
+ai:
+  enabled: false
+  model: "claude-haiku-4-5-20251001"
+  max_searches: 1
+
+# ------------------------------------------------------------------------------
+# LORENTZIAN (L) — COMPOSITE TREND (BINANCE DATA)
+# ------------------------------------------------------------------------------
+lorentzian:
+  enabled: false
+  symbol: "BTC/USDT"
+  timeframe: "5m"
+  lookback: 750
+  k_neighbors: 21
+  horizon_bars: 6
+  min_confidence: 0.52
+  vp_lookback: 400
+  smc_lookback: 200
+  threshold: 2.0
+
+# ------------------------------------------------------------------------------
+# KELTNER (K)
+# ------------------------------------------------------------------------------
+keltner:
+  enabled: false
+  symbol: "BTC/USDT"
+  timeframe: "5m"
+  ema_period: 20
+  atr_period: 20
+  atr_multiplier: 2.0
+
+# ------------------------------------------------------------------------------
+# ADX API — TREND SOURCES (P, S)
+# ------------------------------------------------------------------------------
+adx:
+  primary:
+    api_url: "https://mimir.erna.codes/bot_adx"
+    timeout: 10
+    retries: 3
+    retry_sleep_s: 1.0
+  secondary:
+    api_url: "https://adx.erna.codes/bot_adx"
+    timeout: 10
+    retries: 3
+    retry_sleep_s: 1.0
+
+# ------------------------------------------------------------------------------
+# MACD (D)
+# ------------------------------------------------------------------------------
+macd:
+  enabled: true
+  symbol: "BTC/USDT"
+  timeframe: "3m"
+  fast: 12
+  slow: 26
+  signal: 9
+  lookback: 200
+
+# ------------------------------------------------------------------------------
+# VKI (V)
+# ------------------------------------------------------------------------------
+vki:
+  enabled: true
+  api_url: ""
+  timeout: 10
+  retries: 3
+  retry_sleep_s: 1.0
+
+# ------------------------------------------------------------------------------
+# MULTI (M)
+# ------------------------------------------------------------------------------
+multi:
+  enabled: true
+  symbol: "BTC/USDT"
+  timeframe: "1m"
+  timeout: 10
+  retries: 2
+  retry_sleep_s: 0.5
+  required_agree: 3
+
+# ------------------------------------------------------------------------------
+# ASSETS / MARKETS
+# ------------------------------------------------------------------------------
+assets: {'BTC': {'enabled': True, 'symbol': 'BTC/USDT'}, 'ETH': {'enabled': True, 'symbol': 'ETH/USDT'}, 'SOL': {'enabled': True, 'symbol': 'SOL/USDT'}, 'XRP': {'enabled': True, 'symbol': 'XRP/USDT'}}
+
